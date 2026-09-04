@@ -1,0 +1,20 @@
+[Unit]
+Description=Reverse SSH tunnel to home server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -i /root/.ssh/tunnel_id_ed25519 -N \
+  -o ExitOnForwardFailure=yes \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=3 \
+  -o StrictHostKeyChecking=accept-new \
+  -o BatchMode=yes \
+  -R 127.0.0.1:2222:127.0.0.1:22 \
+  -p 22 routertunnel@your.home.server
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
