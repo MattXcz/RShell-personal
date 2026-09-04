@@ -51,7 +51,13 @@ SSHD_CONFIG="/etc/ssh/sshd_config"
 grep -q '^AllowTcpForwarding' "$SSHD_CONFIG" || echo "AllowTcpForwarding yes" >> "$SSHD_CONFIG"
 grep -q '^GatewayPorts' "$SSHD_CONFIG" || echo "GatewayPorts no" >> "$SSHD_CONFIG"
 
-systemctl restart sshd
+if systemctl list-unit-files --type=service | grep -q '^ssh\.service'; then
+  systemctl restart ssh
+elif systemctl list-unit-files --type=service | grep -q '^sshd\.service'; then
+  systemctl restart sshd
+else
+  echo "Could not find 'ssh' or 'sshd' systemd unit - restart your SSH server manually." >&2
+fi
 
 cat <<EOF
 
