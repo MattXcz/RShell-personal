@@ -27,14 +27,25 @@ Nahraď `MattXcz/RShell-personal` v příkazech níže svým repem.
 
 ### 1. Na routeru (jako root)
 
+Jediná proměnná, kterou zadáváš, je adresa domácího serveru (poslední
+argument za `--`):
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/MattXcz/RShell-personal/main/install-router.sh \
-  | HOME_SERVER_HOST=your.home.server HOME_SERVER_PORT=22 REMOTE_PORT=2222 sh
+  | sh -s -- your.home.server
 ```
 
 Skript vygeneruje klíč (pokud ještě neexistuje), nainstaluje a spustí
 systemd službu (nebo cron watchdog, pokud systemd chybí) a na konci vypíše
 hotový příkaz pro krok 2 i s routerovým veřejným klíčem.
+
+Výchozí porty jsou `HOME_SERVER_PORT=2222` a `REMOTE_PORT=2222`. Pokud tvůj
+server poslouchá SSH jinde, přepiš to env proměnnou, např.:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/MattXcz/RShell-personal/main/install-router.sh \
+  | HOME_SERVER_PORT=22 sh -s -- your.home.server
+```
 
 ### 2. Na domácím serveru (jako root)
 
