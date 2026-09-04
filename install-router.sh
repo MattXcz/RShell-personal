@@ -1,20 +1,21 @@
 #!/bin/sh
 # One-shot installer for the router side of the reverse SSH tunnel.
-# Run on the ROUTER as root - only the home server address is required:
+# Run on the ROUTER as root - HOME_SERVER_HOST is the only required var,
+# keep it last so it's the easy bit to swap per-router:
 #
 #   curl -fsSL https://raw.githubusercontent.com/MattXcz/RShell-personal/main/install-router.sh \
-#     | sh -s -- your.home.server
+#     | HOME_SERVER_PORT=2222 REMOTE_PORT=2222 HOME_SERVER_HOST=your.home.server sh
 #
-# HOME_SERVER_PORT/REMOTE_PORT/TUNNEL_USER can still be overridden via env
-# vars if your setup differs from the defaults below.
+# HOME_SERVER_PORT/REMOTE_PORT/TUNNEL_USER fall back to sensible defaults
+# below if omitted.
 #
 # Idempotent: safe to re-run (keeps existing key, just refreshes the service).
 set -e
 
-HOME_SERVER_HOST="${HOME_SERVER_HOST:-${1:?usage: install-router.sh <home-server-address>}}"
 HOME_SERVER_PORT="${HOME_SERVER_PORT:-2222}"
 REMOTE_PORT="${REMOTE_PORT:-2222}"
 TUNNEL_USER="${TUNNEL_USER:-routertunnel}"
+HOME_SERVER_HOST="${HOME_SERVER_HOST:?set HOME_SERVER_HOST=your.home.server}"
 KEY="/root/.ssh/tunnel_id_ed25519"
 
 command -v ssh >/dev/null 2>&1 || { echo "openssh client ('ssh') not found on this router" >&2; exit 1; }
